@@ -26,4 +26,23 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     post api_v1_users_url, params: { user: { email: @user.email, password: 'password'}}, as: :json
     assert_response :unprocessable_entity
   end
+
+  test 'should update user' do
+    put api_v1_user_url(@user), params: { user: {email: @user.email, password: 'newpassword'}}, as: :json
+    assert_response :success
+  end
+
+  test 'should not update user with invalid params' do
+    put api_v1_user_url(@user), params: { user: {email: 'bad_email_address', password: 'newpassword'}}, as: :json
+    assert_response :unprocessable_entity
+  end
+
+  test 'should destroy user' do
+    assert_difference('User.count', -1) do
+      delete api_v1_user_url(@user), as: :json
+    end
+
+    assert_response :no_content
+  end
+
 end
